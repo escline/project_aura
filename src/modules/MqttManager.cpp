@@ -400,6 +400,11 @@ void MqttManager::destroyClient() {
 bool MqttManager::connectTransport(const char *client_id, const char *will_topic) {
     destroyClient();
 
+    if (mqtt_tls_enabled_ && mqtt_ca_cert_.isEmpty()) {
+        LOGW("MQTT", "TLS enabled but CA certificate is missing");
+        return false;
+    }
+
     esp_mqtt_client_config_t config = {};
     config.broker.address.hostname = mqtt_broker_endpoint_buf_;
     config.broker.address.port = mqtt_port_;

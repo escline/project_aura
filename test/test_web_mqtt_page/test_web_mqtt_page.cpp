@@ -113,6 +113,7 @@ void test_web_mqtt_page_full_template_renders_tls_controls() {
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("Use TLS / SSL"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("name=\"ca_cert\""));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("CA Certificate (PEM)"));
+    TEST_ASSERT_NOT_EQUAL(String::npos, html.find("Use the broker hostname, not an IP address"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("-----BEGIN CERTIFICATE-----"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("&lt;ca&gt;"));
 }

@@ -53,9 +53,31 @@ bool ends_with_char(const String &value, char ch) {
     return raw && raw[len - 1] == ch;
 }
 
-bool contains_text(const String &value, const char *needle) {
+bool contains_ordered_text(const String &value, const char *first, const char *second) {
     const char *raw = value.c_str();
-    return raw && needle && strstr(raw, needle) != nullptr;
+    if (!raw || !first || !second) {
+        return false;
+    }
+    const char *first_pos = strstr(raw, first);
+    if (!first_pos) {
+        return false;
+    }
+    return strstr(first_pos + strlen(first), second) != nullptr;
+}
+
+bool contains_only_pem_text_chars(const String &value) {
+    const char *raw = value.c_str();
+    if (!raw) {
+        return false;
+    }
+    for (; *raw != '\0'; ++raw) {
+        const unsigned char ch = static_cast<unsigned char>(*raw);
+        if (ch == '\n' || (ch >= 32 && ch <= 126)) {
+            continue;
+        }
+        return false;
+    }
+    return true;
 }
 
 void remove_last_char(String &value) {
@@ -159,10 +181,16 @@ ParseResult parseSaveInput(const SaveInput &input, const CurrentCredentials &cur
             result.error_message = "CA certificate is required when TLS is enabled";
             return result;
         }
-        if (!contains_text(update.ca_cert_pem, "-----BEGIN CERTIFICATE-----") ||
-            !contains_text(update.ca_cert_pem, "-----END CERTIFICATE-----")) {
+        if (!contains_ordered_text(update.ca_cert_pem,
+                                   "-----BEGIN CERTIFICATE-----",
+                                   "-----END CERTIFICATE-----")) {
             result.status_code = 400;
             result.error_message = "CA certificate must be a PEM certificate";
+            return result;
+        }
+        if (!contains_only_pem_text_chars(update.ca_cert_pem)) {
+            result.status_code = 400;
+            result.error_message = "CA certificate contains unsupported characters";
             return result;
         }
     }

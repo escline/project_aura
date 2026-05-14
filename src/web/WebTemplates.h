@@ -1048,7 +1048,7 @@ static const char kMqttPageTemplate[] PROGMEM = R"HTML(
                     <label for="ca_cert">CA Certificate (PEM)</label>
                     <textarea name="ca_cert" id="ca_cert" placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----">{{MQTT_CA_CERT}}</textarea>
                 </div>
-                <div class="field-hint">Required for TLS brokers such as HiveMQ Cloud. Client certificates and private keys are not used.</div>
+                <div class="field-hint">Required for TLS brokers such as HiveMQ Cloud. Use the broker hostname, not an IP address, so certificate verification can match. Client certificates and private keys are not used.</div>
 
                 <div class="section-title">Authentication</div>
 

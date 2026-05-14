@@ -131,6 +131,21 @@ void test_web_mqtt_save_utils_parse_rejects_tls_without_valid_ca() {
     TEST_ASSERT_FALSE(result.success);
     TEST_ASSERT_EQUAL_STRING("CA certificate must be a PEM certificate",
                              result.error_message.c_str());
+
+    input.ca_cert_pem =
+        "-----END CERTIFICATE-----\nabc\n-----BEGIN CERTIFICATE-----";
+    result = WebMqttSaveUtils::parseSaveInput(input, {});
+    TEST_ASSERT_FALSE(result.success);
+    TEST_ASSERT_EQUAL_STRING("CA certificate must be a PEM certificate",
+                             result.error_message.c_str());
+
+    input.ca_cert_pem = "-----BEGIN CERTIFICATE-----\nabc";
+    input.ca_cert_pem += static_cast<char>(1);
+    input.ca_cert_pem += "\n-----END CERTIFICATE-----";
+    result = WebMqttSaveUtils::parseSaveInput(input, {});
+    TEST_ASSERT_FALSE(result.success);
+    TEST_ASSERT_EQUAL_STRING("CA certificate contains unsupported characters",
+                             result.error_message.c_str());
 }
 
 void test_web_mqtt_save_utils_parse_rejects_oversized_ca() {

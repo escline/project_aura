@@ -37,6 +37,15 @@ If you see "Entity not found" warnings:
 2. Search for your MQTT base topic or `Aura`.
 3. Open the dashboard code and use Find & Replace to swap the prefix.
 
+## MQTT TLS Brokers
+
+For cloud brokers such as HiveMQ Cloud, enable `Use TLS / SSL` on Aura's `/mqtt`
+page and paste the broker CA certificate into `CA Certificate (PEM)`.
+
+Use the broker hostname, not an IP address, when TLS is enabled. Certificate
+verification matches the broker certificate against that hostname. Client
+certificates and private keys are not used.
+
 ## Multiple Aura Devices
 Two Aura devices must use different `MQTT base topic` values.
 

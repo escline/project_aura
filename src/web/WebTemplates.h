@@ -1067,7 +1067,7 @@ static const char kMqttPageTemplate[] PROGMEM = R"HTML(
                 <div class="form-group">
                     <label for="pass">Password</label>
                     <div class="input-container">
-                        <input type="password" name="pass" id="pass" value="{{MQTT_PASS}}" placeholder="password" autocomplete="current-password">
+                        <input type="password" name="pass" id="pass" value="{{MQTT_PASS}}" placeholder="{{MQTT_PASS_PLACEHOLDER}}" autocomplete="new-password">
                         <button type="button" class="eye-icon" onclick="togglePass()" aria-label="Toggle password visibility">
                             <svg id="eye-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -1075,6 +1075,7 @@ static const char kMqttPageTemplate[] PROGMEM = R"HTML(
                             </svg>
                         </button>
                     </div>
+                    <div class="field-hint">{{MQTT_PASS_HINT}}</div>
                 </div>
 
                 <div class="section-title">Topics</div>
@@ -1150,10 +1151,11 @@ static const char kMqttPageTemplate[] PROGMEM = R"HTML(
             var anonymous = document.getElementById('anonymous').checked;
             var user = document.getElementById('user').value;
             var pass = document.getElementById('pass').value;
+            var hasStoredPassword = {{MQTT_HAS_STORED_PASS}};
             var tls = document.getElementById('tls').checked;
             var caCert = document.getElementById('ca_cert').value;
 
-            if (!anonymous && (user === '' || pass === '')) {
+            if (!anonymous && (user === '' || (pass === '' && !hasStoredPassword))) {
                 e.preventDefault();
                 alert('Username and password are required when anonymous mode is disabled');
                 return false;

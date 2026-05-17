@@ -35,6 +35,27 @@ void test_web_mqtt_save_utils_parse_accepts_and_normalizes_valid_payload() {
     TEST_ASSERT_TRUE(result.update.discovery);
 }
 
+void test_web_mqtt_save_utils_parse_keeps_existing_password_when_blank() {
+    WebMqttSaveUtils::SaveInput input{};
+    input.host = "mqtt.local";
+    input.user = "mqtt-user";
+    input.pass = "";
+    input.device_name = "Aura";
+    input.base_topic = "aura/main";
+    input.anonymous = false;
+
+    WebMqttSaveUtils::CurrentCredentials current{};
+    current.pass = "stored-pass";
+
+    const WebMqttSaveUtils::ParseResult result =
+        WebMqttSaveUtils::parseSaveInput(input, current);
+
+    TEST_ASSERT_TRUE(result.success);
+    TEST_ASSERT_FALSE(result.update.anonymous);
+    TEST_ASSERT_EQUAL_STRING("mqtt-user", result.update.user.c_str());
+    TEST_ASSERT_EQUAL_STRING("stored-pass", result.update.pass.c_str());
+}
+
 void test_web_mqtt_save_utils_parse_rejects_invalid_payloads() {
     WebMqttSaveUtils::SaveInput input{};
     input.device_name = "Aura";
@@ -167,6 +188,7 @@ void test_web_mqtt_save_utils_parse_rejects_oversized_ca() {
 int main(int, char **) {
     UNITY_BEGIN();
     RUN_TEST(test_web_mqtt_save_utils_parse_accepts_and_normalizes_valid_payload);
+    RUN_TEST(test_web_mqtt_save_utils_parse_keeps_existing_password_when_blank);
     RUN_TEST(test_web_mqtt_save_utils_parse_rejects_invalid_payloads);
     RUN_TEST(test_web_mqtt_save_utils_parse_uses_default_port_when_empty);
     RUN_TEST(test_web_mqtt_save_utils_parse_tls_uses_8883_and_normalizes_ca);

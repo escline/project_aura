@@ -58,7 +58,8 @@ void test_web_mqtt_page_status_for_matches_connectivity_states() {
 void test_web_mqtt_page_render_html_replaces_and_escapes_placeholders() {
     const String tpl =
         "{{STATUS}}|{{STATUS_CLASS}}|{{DEVICE_ID}}|{{DEVICE_IP}}|{{MQTT_HOST}}|{{MQTT_PORT}}|"
-        "{{MQTT_USER}}|{{MQTT_PASS}}|{{MQTT_NAME}}|{{MQTT_TOPIC}}|{{ANONYMOUS_CHECKED}}|"
+        "{{MQTT_USER}}|{{MQTT_PASS}}|{{MQTT_PASS_PLACEHOLDER}}|{{MQTT_PASS_HINT}}|"
+        "{{MQTT_HAS_STORED_PASS}}|{{MQTT_NAME}}|{{MQTT_TOPIC}}|{{ANONYMOUS_CHECKED}}|"
         "{{DISCOVERY_CHECKED}}|{{TLS_CHECKED}}|{{MQTT_CA_CERT}}";
 
     WebMqttPage::PageData data;
@@ -82,7 +83,11 @@ void test_web_mqtt_page_render_html_replaces_and_escapes_placeholders() {
     const String html = WebMqttPage::renderHtml(tpl, data);
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("Connected|status-connected"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("id&lt;&amp;&gt;"));
-    TEST_ASSERT_NOT_EQUAL(String::npos, html.find("p&lt;&amp;&gt;w"));
+    TEST_ASSERT_EQUAL(String::npos, html.find("p&lt;&amp;&gt;w"));
+    TEST_ASSERT_NOT_EQUAL(String::npos, html.find("|Leave blank to keep current password|"));
+    TEST_ASSERT_NOT_EQUAL(String::npos,
+                          html.find("|Leave blank to keep the stored MQTT password"));
+    TEST_ASSERT_NOT_EQUAL(String::npos, html.find("|true|"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("Aura &quot;Screen&quot;"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("1883"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("|checked|"));
@@ -111,6 +116,10 @@ void test_web_mqtt_page_full_template_renders_tls_controls() {
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("name=\"tls\""));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("id=\"tls\" name=\"tls\" checked"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("Use TLS / SSL"));
+    TEST_ASSERT_EQUAL(String::npos, html.find("value=\"pass\""));
+    TEST_ASSERT_EQUAL(String::npos, html.find(">pass<"));
+    TEST_ASSERT_NOT_EQUAL(String::npos, html.find("value=\"\""));
+    TEST_ASSERT_NOT_EQUAL(String::npos, html.find("Leave blank to keep current password"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("name=\"ca_cert\""));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("CA Certificate (PEM)"));
     TEST_ASSERT_NOT_EQUAL(String::npos, html.find("Use the broker hostname, not an IP address"));

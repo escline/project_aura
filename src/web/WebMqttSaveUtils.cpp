@@ -203,13 +203,6 @@ ParseResult parseSaveInput(const SaveInput &input, const CurrentCredentials &cur
         return result;
     }
 
-    if (!update.anonymous && (string_is_empty(update.user) || string_is_empty(update.pass))) {
-        result.status_code = 400;
-        result.error_message =
-            "Username and password are required when anonymous mode is disabled";
-        return result;
-    }
-
     if (update.anonymous) {
         if (string_is_empty(update.user)) {
             update.user = current_credentials.user;
@@ -217,6 +210,15 @@ ParseResult parseSaveInput(const SaveInput &input, const CurrentCredentials &cur
         if (string_is_empty(update.pass)) {
             update.pass = current_credentials.pass;
         }
+    } else if (string_is_empty(update.pass) && !string_is_empty(current_credentials.pass)) {
+        update.pass = current_credentials.pass;
+    }
+
+    if (!update.anonymous && (string_is_empty(update.user) || string_is_empty(update.pass))) {
+        result.status_code = 400;
+        result.error_message =
+            "Username and password are required when anonymous mode is disabled";
+        return result;
     }
 
     if (ends_with_char(update.base_topic, '/')) {

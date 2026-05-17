@@ -22,6 +22,10 @@ String uint_to_string(uint32_t value) {
     return String(buf);
 }
 
+const char *bool_to_js(bool value) {
+    return value ? "true" : "false";
+}
+
 String replace_placeholder(const String &input, const char *needle, const String &replacement) {
     const char *src = input.c_str();
     if (!src || !needle || *needle == '\0') {
@@ -88,6 +92,7 @@ StatusView statusFor(const PageData &data) {
 
 String renderHtml(const String &html_template, const PageData &data) {
     const StatusView status = statusFor(data);
+    const bool has_stored_password = data.pass.length() > 0;
     String html = html_template;
 
     html = replace_placeholder(html, "{{STATUS}}", String(status.text));
@@ -102,7 +107,17 @@ String renderHtml(const String &html_template, const PageData &data) {
                                                          : Config::MQTT_DEFAULT_PORT)
                                                   : data.port));
     html = replace_placeholder(html, "{{MQTT_USER}}", WebTextUtils::htmlEscape(data.user));
-    html = replace_placeholder(html, "{{MQTT_PASS}}", WebTextUtils::htmlEscape(data.pass));
+    html = replace_placeholder(html, "{{MQTT_PASS}}", String(""));
+    html = replace_placeholder(html, "{{MQTT_PASS_PLACEHOLDER}}",
+                               has_stored_password
+                                   ? String("Leave blank to keep current password")
+                                   : String("password"));
+    html = replace_placeholder(html, "{{MQTT_PASS_HINT}}",
+                               has_stored_password
+                                   ? String("Leave blank to keep the stored MQTT password, or enter a new password to replace it.")
+                                   : String("Required unless anonymous mode is enabled."));
+    html = replace_placeholder(html, "{{MQTT_HAS_STORED_PASS}}",
+                               String(bool_to_js(has_stored_password)));
     html = replace_placeholder(html, "{{MQTT_NAME}}", WebTextUtils::htmlEscape(data.device_name));
     html = replace_placeholder(html, "{{MQTT_TOPIC}}", WebTextUtils::htmlEscape(data.base_topic));
     html = replace_placeholder(html, "{{MQTT_CA_CERT}}",

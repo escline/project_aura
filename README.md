@@ -7,22 +7,26 @@
 [![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=TNsyDGNrN-w)
 [![YouTube Review](https://img.shields.io/badge/YouTube-Review-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=1pzBqcmbWl8)
 
-Project Aura is an open-source ESP32-S3 air-quality station built for makers who want a polished,
-reliable device rather than a bare sensor board. It combines a touch-friendly LVGL UI, a full local
-web dashboard with browser OTA updates, a Wi-Fi setup portal, optional 0-10V fan control, and MQTT
-with Home Assistant discovery.
+Project Aura AQ is an open-source ESP32-S3 air-quality station built for makers who want a
+polished, finished device rather than a temporary sensor prototype. You print the enclosure, install
+top-tier sensors, flash the firmware from a browser, and get a touchscreen air-quality monitor with a
+local web dashboard, OTA updates, MQTT/Home Assistant integration, optional 0-10V ventilation
+control, and no cloud dependency.
 
 This repository contains the firmware source code and configuration needed to flash and customize the device.
 
-> **Support the project:** back the crowdfunding to get detailed build instructions, 3D-printable enclosure models, and wiring guides at https://makerworld.com/en/crowdfunding/159-project-aura-make-the-invisible-visible
+> **Support the project:** back the MakerWorld project to get the detailed build guide, 3D-printable
+> enclosure models, Bambu-ready 3MF files, and wiring instructions:
+> https://makerworld.com/en/crowdfunding/159-project-aura-aq-make-the-invisible-visible
 
 **Join the community:** [GitHub Discussions](https://github.com/21cncstudio/project_aura/discussions)
 
 ## TL;DR
-- **What it is:** a finished air-quality monitor (touchscreen + web dashboard + Home Assistant), not a bare sensor breakout.
-- **Minimum BOM:** ESP32-S3-Touch-LCD-4.3 + Sensirion SEN66 + 5V power. Everything else is optional.
-- **Skill level:** solder-free assembly using Grove/QT cables, but the connector pin order is custom — read the wiring notice.
-- **Software:** PlatformIO + Arduino-ESP32 3.1.1; flash firmware **and** LittleFS image (web/UI assets), then onboard Wi-Fi.
+- **What it is:** a finished DIY air-quality monitor with touchscreen UI, local dashboard, OTA updates, and Home Assistant support.
+- **Display options:** Waveshare ESP32-S3-Touch-LCD-4.3 and ESP32-S3-Touch-LCD-7.0 are supported. The 16 MB flash version is mandatory.
+- **Minimum useful BOM:** compatible Waveshare display board + Sensirion SEN66 + stable 5V/2A USB power. Everything else is optional.
+- **Build paths:** use the recommended custom Aura PCB for the cleanest build, or the classic module-based Adafruit/STEMMA QT/Qwiic path.
+- **First flash:** easiest through the browser-based web installer; developers can build from source with PlatformIO.
 - **Works without internet:** AP setup mode and the local dashboard are fully offline.
 
 ## Table of Contents
@@ -31,7 +35,9 @@ This repository contains the firmware source code and configuration needed to fl
 - [Gallery](#gallery)
 - [UI Screens](#ui-screens)
 - [Web Dashboard](#web-dashboard)
+- [Project Files and Backer Resources](#project-files-and-backer-resources)
 - [Hardware and BOM](#hardware-and-bom)
+- [Build Options](#build-options)
 - [Assembly and Wiring Notice](#assembly-and-wiring-notice)
 - [Pin Configuration](#pin-configuration)
 - [UI Languages](#ui-languages)
@@ -40,6 +46,7 @@ This repository contains the firmware source code and configuration needed to fl
 - [Configuration](#configuration)
 - [MQTT + Home Assistant](#mqtt--home-assistant)
 - [Network Requirements](#network-requirements)
+- [An Honest Note About Cost](#an-honest-note-about-cost)
 - [Contributing](#contributing)
 - [License and Commercial Use](#license-and-commercial-use)
 - [Tests](#tests)
@@ -67,7 +74,9 @@ Also watch the hands-on review:
 - Home Assistant ready: automatic MQTT discovery and ready-to-use dashboard YAML
 
 **Hardware**
-- No soldering required: designed for easy assembly using Grove/QT connectors
+- 4.3" and 7" Waveshare ESP32-S3 touchscreen builds are supported
+- Recommended custom Aura PCB path plus classic module-based path
+- No soldering required for the recommended PCB build
 - Optional DAC control (GP8403, 0-10V): manual levels/timer plus automatic demand mode from air-quality thresholds
 - Hardware autodetect: PCF8523/DS3231 RTC plus BMP58x/BMP3xx/DPS310 pressure
 - Robust Safe Boot: automatic rollback to the last-known-good config after crashes
@@ -110,14 +119,31 @@ Useful API routes used by the dashboard:
 - `POST /api/settings`
 - `POST /api/ota`
 
+## Project Files and Backer Resources
+This GitHub repository contains the open-source firmware, web dashboard assets, Home Assistant examples,
+test suite, and developer build configuration.
+
+MakerWorld backers receive the digital build ecosystem that is not stored in this repository:
+- 3D-printable enclosure files
+- Bambu-ready 3MF build plates and STL files
+- Detailed build guide and wiring instructions
+- Firmware release files and browser web installer access
+- Ongoing project updates and backer resources
+
+Electronic components are purchased separately. You can build Aura using the recommended custom Aura
+PCB path or the classic module-based path; you do not need both.
+
 ## Hardware and BOM
-Project Aura is designed around high-quality components to ensure accuracy. If you are sourcing parts yourself,
-look for these specific modules for the reference build:
+Project Aura is designed around high-quality components to ensure accuracy and long-term usefulness.
+If you are sourcing parts yourself, start with the display board and the SEN66. Add optional sensors
+only when they make sense for your room, workshop, printer setup, or automation goals.
 
 | Component | Part / Model |
 | :--- | :--- |
-| Core Board | [Waveshare ESP32-S3-Touch-LCD-4.3 (800x480)](https://www.waveshare.com/esp32-s3-touch-lcd-4.3.htm?&aff_id=144793) |
-| Main Sensor | Sensirion SEN66 (via Adafruit breakout) |
+| Core Board, 4.3" | [Waveshare ESP32-S3-Touch-LCD-4.3 (800x480)](https://www.waveshare.com/esp32-s3-touch-lcd-4.3.htm?&aff_id=144793) |
+| Core Board, 7" | [Waveshare ESP32-S3-Touch-LCD-7.0](https://www.waveshare.com/esp32-s3-touch-lcd-7.htm?&aff_id=144793) |
+| Main Sensor | [Sensirion SEN66](https://sensirion.com/products/catalog/SEN66) via custom Aura PCB or Adafruit SEN6x breakout |
+| Recommended Sensor Hub | [Project Aura AQ Sensor Hub PCB v1.1](https://www.pcbway.com/project/shareproject/Project_Aura_AQ_Sensor_Hub_PCB_v1_1_e4aa6e80.html) (optional but recommended) |
 | Carbon Monoxide (CO) | [DFRobot SEN0466 — Factory Calibrated Electrochemical CO (0-1000 ppm, I2C & UART)](https://www.dfrobot.com/product-2508.html?tracking=aJ5V32) (optional) |
 | Formaldehyde (HCHO) | Sensirion SFA30 (0-1000 ppb) **or** SFA40 — both autodetected. SFA40 available as the [DFRobot SEN0661 breakout](https://www.dfrobot.com/product-3020.html?tracking=aJ5V32) (optional) |
 | Optional DFR Gas Slot | One DFRobot electrochemical sensor at a time: [SEN0469 NH3](https://www.dfrobot.com/product-2513.html?tracking=aJ5V32), [SEN0470 SO2](https://www.dfrobot.com/product-2514.html?tracking=aJ5V32), [SEN0471 NO2](https://www.dfrobot.com/product-2515.html?tracking=aJ5V32), [SEN0467 H2S](https://www.dfrobot.com/product-2511.html?tracking=aJ5V32), or [SEN0472 O3](https://www.dfrobot.com/product-2516.html?tracking=aJ5V32). Set the module's I2C address to `0x75` per the [DFRobot wiki](https://wiki.dfrobot.com/sen0465/docs/21907) (optional) |
@@ -126,21 +152,51 @@ look for these specific modules for the reference build:
 | DAC Output | [DFRobot GP8403 2-Channel I2C DAC (0-10V), DFR0971](https://www.dfrobot.com/product-2613.html?tracking=aJ5V32) — VOUT0 used (optional) |
 
 **Notes**
+- Use only Waveshare boards with 16 MB flash. 8 MB flash variants will not work with Project Aura firmware and filesystem.
 - SEN66 VOC/NOx require about 5 minutes of warmup for reliable readings; the UI shows WARMUP during this period.
 - If the CO sensor (SEN0466) is not detected at boot, CO is marked unavailable and the rest of the telemetry stays active.
 - Aura auto-detects which DFR gas variant is installed on the optional slot and exposes the matching local UI and MQTT/Home Assistant entities.
 - Affiliate disclosure: the Waveshare and DFRobot links above are affiliate links and help support Project Aura at no extra cost.
 
-Recommended retailers: Mouser, DigiKey, LCSC, Adafruit, Seeed Studio, [Waveshare (core board)](https://www.waveshare.com/esp32-s3-touch-lcd-4.3.htm?&aff_id=144793).
+Recommended retailers: Mouser, DigiKey, LCSC, Adafruit, Seeed Studio, DFRobot, and Waveshare.
+
+## Build Options
+Choose one electronics path. You do not need both.
+
+**Recommended path: custom Aura PCB**
+- Replaces several separate modules, hubs, short cables, and capacitor wiring with one dedicated board.
+- Includes the pressure sensor, RTC, SEN66 connection path, capacitor, and optional sensor connectors.
+- Lets most optional sensors connect using the cables supplied with those sensor modules.
+- Best choice for new builders when the PCB is available in your region.
+
+PCB and reseller links:
+- PCBWay shared project: https://www.pcbway.com/project/shareproject/Project_Aura_AQ_Sensor_Hub_PCB_v1_1_e4aa6e80.html
+- Smartdomo, Germany: https://smartdomo.de/
+- Cuzom, Finland: https://cuzom.com/shop/aura-pcb
+- SVR3DPrints, Netherlands: https://svr3dprints.nl/aura-aq
+- Savi Dynamics, USA: https://shop.savidynamics.com/shop
+- Manger Made LLC, USA: https://mangermadellc.com/product/project-aura-pcb/
+- Myndworx Asylum, Australia: https://www.myndworx.com/
+
+**Classic path: Adafruit / STEMMA QT / Qwiic modules**
+- Still fully supported by firmware and documentation.
+- Best if you already bought the original BOM components.
+- Requires more cables and more attention to connector pin order.
+- Do not skip the electrolytic capacitor listed in the classic BOM.
+- Useful when you want maximum sourcing flexibility for pressure, RTC, and hub modules.
 
 ## Assembly and Wiring Notice
-Please pay close attention to the cabling. The pin order on the board is custom and requires modification
-of standard off-the-shelf cables (pin swapping).
+Please pay close attention to cabling and power before turning the device on.
+
+For the recommended Aura PCB path, the build is designed to be a clean plug-together process using
+the documented connectors. For the classic module-based path, some off-the-shelf cables may need
+pin-order changes and the wiring requires more attention.
 
 Backers: please refer to the comprehensive Build Guide included in your reward for the exact wiring diagram
 and a trouble-free assembly.
 
-DIY: verify pinouts against the pin table below before powering on to avoid damaging components.
+DIY: verify pinouts against the pin table below before powering on to avoid damaging components. Use
+a stable 5V/2A USB power supply and a short, good-quality USB cable.
 
 ## Pin Configuration
 | Component | Pin (ESP32-S3) | Notes |
@@ -220,8 +276,16 @@ Core modules live in `src/core/` and orchestrate startup (`AppInit`, `BoardInit`
 Feature managers are in `src/modules/`, UI in `src/ui/`, and web pages in `src/web/`.
 
 ## Build and Flash (PlatformIO)
-Prerequisites: PlatformIO CLI or VSCode + PlatformIO extension.
-Built with Arduino ESP32 core 3.1.1 (ESP-IDF 5.3.x).
+For most builders, the first flash is easiest through the browser-based Aura Web Installer:
+
+https://aura.21cncstudio.com/
+
+Connect the Waveshare board through its data USB-C port, open the installer in a compatible browser,
+and follow the build guide. After first flash and Wi-Fi setup, normal firmware updates can be done
+from Aura's local dashboard using OTA `.bin` files from GitHub releases.
+
+For development builds, use PlatformIO CLI or VSCode + PlatformIO extension.
+The firmware is built with Arduino ESP32 core 3.1.1 (ESP-IDF 5.3.x).
 
 ```powershell
 git clone https://github.com/21cncstudio/project_aura.git
@@ -280,6 +344,20 @@ MQTT stays idle until configured and enabled.
 Quick diagnostics for support:
 - `GET /api/state` should return live JSON with `network.mode`, `network.ip`, and sensor payload.
 - `GET /api/diag` (available in AP setup mode) shows Wi-Fi state, IP/hostname, heap, OTA busy state, and recent warnings/errors.
+
+## An Honest Note About Cost
+The electronic component cost is not money received by the project. It is the approximate market
+price of the hardware you buy separately: touchscreen board, SEN66 sensor, PCB or modules, cables,
+fasteners, power parts, and any optional sensors you choose to add. The final price depends on your
+country, shipping, taxes, availability, and selected options.
+
+What MakerWorld backers support is the work behind the device: enclosure design, firmware
+architecture, touchscreen UI, web installer, local dashboard, OTA update flow, Home Assistant
+integration, testing, documentation, updates, and support.
+
+Cheap closed monitors can be useful, but Project Aura AQ is a different kind of device. It is for
+people who want control, transparency, repairability, local integration, open-source firmware, and
+the experience of building a real device themselves.
 
 ## Contributing
 Contributions are welcome! Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) for details on the process for submitting pull requests and the Contributor License Agreement (CLA).

@@ -37,6 +37,7 @@ This repository contains the firmware source code and configuration needed to fl
 - [Web Dashboard](#web-dashboard)
 - [Project Files and Backer Resources](#project-files-and-backer-resources)
 - [Hardware and BOM](#hardware-and-bom)
+- [Optional Sensor Expansion](#optional-sensor-expansion)
 - [Build Options](#build-options)
 - [Assembly and Wiring Notice](#assembly-and-wiring-notice)
 - [Pin Configuration](#pin-configuration)
@@ -160,6 +161,27 @@ only when they make sense for your room, workshop, printer setup, or automation 
 - Affiliate disclosure: the Waveshare and DFRobot links above are affiliate links and help support Project Aura at no extra cost.
 
 Recommended retailers: Mouser, DigiKey, LCSC, Adafruit, Seeed Studio, DFRobot, and Waveshare.
+
+## Optional Sensor Expansion
+Most consumer air-quality monitors stop at PM, CO2, VOC, temperature, and humidity. Aura can go
+further because the firmware, UI, dashboard, MQTT discovery, and optional hardware are designed as
+one expandable platform.
+
+Optional sensors let one build focus on the environment it is actually monitoring:
+- HCHO sensing helps track formaldehyde and material off-gassing from furniture, plywood, paints,
+  adhesives, resins, laser-cut materials, and new interiors.
+- CO sensing is useful around combustion appliances, garages, workshops, and ventilation experiments.
+  It is telemetry, not a certified CO alarm.
+- The optional DFR electrochemical gas slot can target NH3, SO2, NO2, H2S, or O3. That makes Aura
+  interesting for farms and animal rooms, small production spaces, labs, classrooms, print rooms,
+  laser rooms, storage areas, and custom ventilation projects.
+- Pressure, RTC, DAC output, MQTT, and Home Assistant support make the readings actionable: log
+  trends, trigger automations, control ventilation, or compare before/after filtration changes.
+
+Install only the sensors that match your real use case. Aura is not a certified safety or regulatory
+instrument; for life-safety or compliance work, use certified detectors and calibrated instruments.
+The goal is to make one open, repairable platform adaptable to places where ordinary consumer
+monitors cannot see enough.
 
 ## Build Options
 Choose one electronics path. You do not need both.
